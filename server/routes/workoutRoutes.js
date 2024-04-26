@@ -1,4 +1,5 @@
 const express = require("express");
+const Workout = require("../models/workoutModel");
 
 const router = express.Router();
 
@@ -13,8 +14,20 @@ router.get("/:id", (req, res) => {
 });
 
 // POST a new workout
-router.post("/", (req, res) => {
-  res.json({ message: "post new workout route" });
+router.post("/", async (req, res) => {
+  const { title, reps, load } = req.body;
+
+  try {
+    const newWorkout = await Workout.create({
+      title,
+      reps,
+      load,
+    });
+
+    res.status(201).json(newWorkout);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 // PATCH updated workout
