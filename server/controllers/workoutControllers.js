@@ -50,12 +50,42 @@ const createWorkout = async (req, res) => {
   }
 };
 
-// PATCH updated workout
-
 // DELETE a workout
+const deleteWorkout = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "No such workout" });
+  }
+
+  const workout = await Workout.findByIdAndDelete({ _id: id });
+
+  if (!workout) return res.status(404).json({ message: "No such workout" });
+
+  res.status(200).json(workout);
+
+  res.json({ message: "Workout deleted successfully" });
+};
+
+// PATCH updated workout
+const updateWorkout = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "No such workout" });
+  }
+
+  const workout = await Workout.findByIdAndUpdate({ _id: id }, { ...req.body });
+
+  if (!workout) return res.status(404).json({ message: "No such workout" });
+
+  res.status(200).json(workout);
+};
 
 module.exports = {
   createWorkout,
   getWorkouts,
   getWorkout,
+  deleteWorkout,
+  updateWorkout,
 };
